@@ -4,20 +4,25 @@ class TDAmeritradeAPI(object):
 	API. In each request an access token is required.
 	'''
 
-	def __init__(self, access_token, client_id, redirect_uri, refresh_token=None,
-							 strategy=None):
+	def __init__(self, client_id, redirect_uri, access_token=None, at_expires_in=0,
+							 refresh_token=None, rt_expires_in=0, strategy=None):
 		self.access_token = access_token
+		self.at_expires_in = at_expires_in
 		self.client_id = client_id
 		self.redirect_uri = redirect_uri
 		self.refresh_token = refresh_token
+		self.rt_expires_in = rt_expires_in
 		self.strategy = strategy
+		self.token_type = 'Bearer'
 		self.api = 'https://api.tdameritrade.com/v1/'
-		self.access_type = 'offline' # receive a refresh token
 
 	def get_access_token(self):
+		'''
+		Retrieve new access_token after the current one has expired.
+		'''
 		pass
 
-	def get_account(self):
+	def get_account(self, account_id):
 		pass
 
 	def get_accounts(self):
@@ -26,28 +31,28 @@ class TDAmeritradeAPI(object):
 	def get_positions(self):
 		pass
 
-	def get_order(self):
+	def get_order(self, account_id, order_id):
 		pass
 
-	def cancel_order(self):
+	def cancel_order(self, account_id, order_id):
 		pass
 
-	def place_order(self):
+	def place_order(self, account_id):
 		pass
 
-	def replace_order(self):
+	def replace_order(self, account_id, order_id):
 		pass
 
-	def create_saved_order(self):
+	def create_saved_order(self, account_id):
 		pass
 
-	def delete_saved_order(self):
+	def delete_saved_order(self, account_id, saved_order_id):
 		pass
 
-	def get_save_order(self):
+	def get_save_order(self, account_id, saved_order_id):
 		pass
 
-	def replace_saved_order(self):
+	def replace_saved_order(self, account_id, saved_order_id):
 		pass
 
 	def get_hours_for_market(self, market):
