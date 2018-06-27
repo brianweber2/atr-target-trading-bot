@@ -3,7 +3,6 @@
   "first_name": "string (required)",
   "last_name": "string (required)",
   "email": "string (required and unique)",
-  "username": "string (required and unique)",
   "password": "string (hashed for security purposes)",
   "account_ids": "list of available account ids from user authentication (required)"
 }
