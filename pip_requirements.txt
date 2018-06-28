@@ -1,11 +1,13 @@
 aniso8601==3.0.2
 asn1crypto==0.24.0
+blinker==1.4
 certifi==2018.4.16
 cffi==1.11.5
 chardet==3.0.4
 click==6.7
 cryptography==2.2.2
 Flask==1.0.2
+Flask-DebugToolbar==0.10.1
 Flask-GraphQL==1.4.1
 flask-mongoengine==0.9.5
 Flask-WTF==0.14.2
