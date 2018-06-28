@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% from 'macros.html' import render_field, field_error %}
+
+{% block title %} - Register{% endblock %}
+
+{% block content %} 
+<div class="register">
+    <h2>Register</h2>
+
+    <form method="POST" action="" class="form">
+        {{ form.hidden_tag() }}
+        {% for field in form if field.widget.input_type != 'hidden' %}
+            {{ render_field(field) }}
+        {% endfor %}
+        <button type="submit" class="button">Register!</button>
+    </form>
+</div>
+{% endblock %}

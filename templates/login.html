@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+{% from 'macros.html' import render_field, field_error %}
+
+{% block title %}{{ super() }} - Login{% endblock %}
+
+{% block content %}
+
+<div class="register">
+    <h2>Login</h2>
+
+    <form method="POST" action="" class="form">
+        {{ form.hidden_tag() }}
+        {% for field in form if field.widget.input_type != 'hidden' %}
+            {{ render_field(field) }}
+        {% endfor %}
+        <button type="submit" class="button">Login!</button>
+    </form>
+    <div>
+        Don't have an account? <a href="{{ url_for('register') }}">Sign up here</a>.
+    </div>
+</div>
+
+{% endblock %}
