@@ -1,0 +1,2 @@
+CLIENT_ID = "ATRTARGET@AMER.OAUTHAP"
+REDIRECT_URI = "http://localhost:8080/tda_auth"

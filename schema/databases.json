@@ -4,7 +4,8 @@
   "last_name": "string (required)",
   "email": "string (required and unique)",
   "password": "string (hashed for security purposes)",
-  "account_ids": "list of available account ids from user authentication (required)"
+  "created_at": "datetime field! (default is now)",
+  "account_ids": "list of available account ids (strings) from user authentication"
 }
 
 // auth_db (stores token info from TD Ameritrade's API)
