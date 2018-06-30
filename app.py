@@ -2,11 +2,11 @@ import json
 import requests
 
 from flask import (Flask, abort, request, render_template, url_for, redirect,
-                   g, flash, session)
+                   g, flash)
 from flask_pymongo import PyMongo
 from flask_login import (LoginManager, login_user, logout_user, login_required,
                          current_user)
-from flask_bcrypt import check_password_hash, generate_password_hash
+from flask_bcrypt import check_password_hash
 from flask_bootstrap import Bootstrap
 
 from models import User
