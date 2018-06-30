@@ -2,14 +2,15 @@ import json
 import requests
 
 from flask import (Flask, abort, request, render_template, url_for, redirect,
-                   g, flash)
+                   g, flash, session)
 from flask_pymongo import PyMongo
 from flask_login import (LoginManager, login_user, logout_user, login_required,
                          current_user)
 from flask_bcrypt import check_password_hash, generate_password_hash
+from flask_bootstrap import Bootstrap
 
 from models import User
-from forms import RegistrationForm, LoginForm
+from forms import LoginForm
 from utils import make_authorization_url
 from config import (CLIENT_ID, REDIRECT_URI, SECRET_KEY, MONGO_DBNAME,
                     MONGO_URI, DEBUG, PORT, HOST)
@@ -18,6 +19,7 @@ from exchange import TDAmeritradeAPI
 td_ameritrade_api = TDAmeritradeAPI(CLIENT_ID, REDIRECT_URI)
 
 app = Flask(__name__)
+Bootstrap(app)
 
 app.config['MONGO_DBNAME'] = MONGO_DBNAME
 app.config['MONGO_URI'] = MONGO_URI
@@ -29,72 +31,70 @@ login_manager.login_view = 'login'
 mongo = PyMongo(app)
 
 @login_manager.user_loader
-def load_user(email):
-  existing_user = User.objects.raw({'email': email})
-  if existing_user is None:
-    print("User does not exist")
+def load_user(username):
+  users = mongo.db.users
+  user = users.find_one({'_id': username})
+  if not user:
+    flash("User does not exist")
     return None
-  return existing_user
+  return User(
+    first_name=user['first_name'],
+    last_name=user['last_name'],
+    username=user['_id'],
+    email=user['email'],
+    account_ids=user['account_ids'],
+    created_at=user['created_at']
+  )
 
 @app.before_request
 def before_request():
-  """Load current user before each request."""
   g.user = current_user
-
-@app.after_request
-def after_request(response):
-  """Actions to perform after each request."""
-  return response
 
 # @app.route('/')
 # def home():
 #   text = '<a href="{}">Authenticate with TD Ameritrade</a>'
 #   return text.format(make_authorization_url())
 
-@app.route('/')
-def index():
-  if current_user in User.objects.all():
-    user = current_user
-    return render_template('index.html', user=user)
+@app.route('/dashboard')
+@login_required
+def dashboard():
+  if current_user.is_authenticated:
+    return render_template('dashboard.html', user=current_user)
   else:
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
   """Login user."""
-  form = LoginForm()
-  if form.validate_on_submit():
-    user = [x for x in User.objects.raw({'_id': form.email.data})]
-    try:
-      user = user[0]
-    except IndexError:
-      flash("Your email or password don't match!", "error")
-    else:
-      print(user.password, form.password.data)
-      if check_password_hash(user.password.encode('utf-8'), form.password.data):
-        login_user(user)
-        flash("You've been logged in!", "success")
-        return redirect(url_for('index'))
-      else:
-        flash("Your email or password don't match!", "error")
+  form = LoginForm(request.form)
+  if request.method == 'POST' and form.validate_on_submit():
+    users = mongo.db.users
+    user = users.find_one({'_id': form.username.data})
+
+    if user and check_password_hash(user['password'], form.password.data):
+      user_obj = User(
+        first_name=user['first_name'],
+        last_name=user['last_name'],
+        username=user['_id'],
+        email=user['email'],
+        account_ids=user['account_ids'],
+        created_at=user['created_at']
+      )
+      login_user(user_obj)
+      flash("You've been logged in!", "success")
+      return redirect(url_for('dashboard'))
+    flash("Your email or password don't match!", "error")
   return render_template('login.html', form=form)
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-  """View for a new user to register."""
-  form = RegistrationForm()
-  if form.validate_on_submit():
-    User(
-      first_name=form.first_name.data,
-      last_name=form.last_name.data,
-      email=form.email.data,
-      password=generate_password_hash(form.password.data).decode('utf-8')
-    ).save()
-    flash("You have successfully registered!", "success")
-    return redirect(url_for('index'))
-  return render_template('register.html', form=form)
+@app.route('/logout')
+@login_required
+def logout():
+  logout_user()
+  flash("You've been logged out!", "success")
+  return redirect(url_for('login'))
 
 @app.route('/tda_auth')
+@login_required
 def tda_auth():
   '''
   Auth code is sent here from TD Ameritrade's API. Use this code to receive

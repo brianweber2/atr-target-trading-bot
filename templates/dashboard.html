@@ -1,0 +1,7 @@
+<p>Hello {{ user.first_name }}!<p>
+
+{% if current_user.is_authenticated %}
+  <a class="button button-secondary icon-right" href="{{ url_for('logout') }}"><span>Logout</span></a>
+{% else %}
+  <p>Problem</p>
+{% endif %}

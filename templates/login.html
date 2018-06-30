@@ -1,23 +1,21 @@
 {% extends 'layout.html' %}
-{% from 'macros.html' import render_field, field_error %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}{{ super() }} - Login{% endblock %}
 
+{% block custom_css %}
+  <link rel="stylesheet" type="text/css" href="/static/css/signin.css">
+{% endblock %}
+
 {% block content %}
-
-<div class="register">
-    <h2>Login</h2>
-
-    <form method="POST" action="" class="form">
-        {{ form.hidden_tag() }}
-        {% for field in form if field.widget.input_type != 'hidden' %}
-            {{ render_field(field) }}
-        {% endfor %}
-        <button type="submit" class="button">Login!</button>
-    </form>
-    <div>
-        Don't have an account? <a href="{{ url_for('register') }}">Sign up here</a>.
-    </div>
-</div>
-
+  <form class="form-signin", method="POST">
+    <img class="mb-4" src="/static/img/ATR_Target_Trading_Logo.jpg" alt="ATR Target Trading Logo" width="100%" height="100%">
+     <h1 class="h3 mb-3 font-weight-normal">Automatic Trading Bot</h1>
+    {{ form.hidden_tag() }}
+    {% for field in form if field.widget.input_type != 'hidden' %}
+      {{ wtf.form_field(field) }}
+    {% endfor %}
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    <p class="mt-5 mb-3 text-muted">&copy; ATR Target Trading 2018</p>
+  </form>
 {% endblock %}

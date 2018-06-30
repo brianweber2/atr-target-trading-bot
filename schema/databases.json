@@ -1,5 +1,6 @@
 // users_db (stores user profile info)
 {
+  "username": "string (required and is randomly created by us)",
   "first_name": "string (required)",
   "last_name": "string (required)",
   "email": "string (required and unique)",

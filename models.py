@@ -1,23 +1,26 @@
 from datetime import datetime
 
-from pymongo.write_concern import WriteConcern
-from pymodm import MongoModel, fields, connect
 
-from config import MONGO_URI
+class User():
 
-# Connect to MongoDB and call the connection "my-app"
-connect(MONGO_URI, alias="my-app")
+  def __init__(self, first_name, last_name, username, email,
+               created_at, account_ids, password=''):
+    self.first_name = first_name
+    self.last_name = last_name
+    self.username = username
+    self.email = email
+    self.created_at = created_at
+    self.account_ids = account_ids
+    self.password = password
 
+  def is_authenticated(self):
+    return True
 
-class User(MongoModel):
-  first_name = fields.CharField(required=True, max_length=50)
-  last_name = fields.CharField(required=True, max_length=50)
-  email = fields.EmailField(required=True, primary_key=True)
-  created_at = fields.DateTimeField(default=datetime.now)
-  password = fields.CharField(required=True, min_length=8)
-  is_active = fields.BooleanField(default=True)
-  account_ids = fields.ListField(fields.IntegerField())
+  def is_active(self):
+    return True
 
-  class Meta:
-  	write_concern = WriteConcern(j=True)
-  	connection_alias = 'my-app'
+  def is_anonymous(self):
+    return True
+
+  def get_id(self):
+    return self.username
