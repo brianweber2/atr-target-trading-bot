@@ -55,9 +55,8 @@ def before_request():
 #   text = '<a href="{}">Authenticate with TD Ameritrade</a>'
 #   return text.format(make_authorization_url())
 
-@app.route('/dashboard')
-@login_required
-def dashboard():
+@app.route('/')
+def index():
   if current_user.is_authenticated:
     return render_template('dashboard.html', user=current_user)
   else:
@@ -82,7 +81,7 @@ def login():
       )
       login_user(user_obj)
       flash("You've been logged in!", "success")
-      return redirect(url_for('dashboard'))
+      return redirect(url_for('index'))
     flash("Your email or password don't match!", "error")
   return render_template('login.html', form=form)
 

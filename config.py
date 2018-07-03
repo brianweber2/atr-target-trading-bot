@@ -7,8 +7,8 @@ SECRET_KEY = 'mysecret'
 # MongoDB Settings
 from pymongo import MongoClient
 MONGO_DBNAME = 'trading_bot'
-DATABASE = MongoClient()[MONGO_DBNAME]
 MONGO_URI = 'mongodb://admin:Testing123@ds221271.mlab.com:21271/trading_bot'
+DATABASE = MongoClient(MONGO_URI)[MONGO_DBNAME]
 USERS_COLLECTION = DATABASE.users
 TRADES_COLLECTION = DATABASE.trades
 

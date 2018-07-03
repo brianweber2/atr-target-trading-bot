@@ -4,7 +4,7 @@ from datetime import datetime
 class User():
 
   def __init__(self, first_name, last_name, username, email,
-               created_at, account_ids, password=''):
+               created_at=datetime.now(), account_ids=[], password=''):
     self.first_name = first_name
     self.last_name = last_name
     self.username = username
@@ -20,7 +20,7 @@ class User():
     return True
 
   def is_anonymous(self):
-    return True
+    return False
 
   def get_id(self):
     return self.username
