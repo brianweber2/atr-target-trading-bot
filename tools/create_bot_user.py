@@ -4,6 +4,7 @@ import click
 import re
 import random
 import string
+import getpass
 
 sys.path.append('../')
 from config import USERS_COLLECTION
@@ -18,9 +19,9 @@ import bcrypt
               help='The last name of the user to add.')
 @click.option('--email', prompt="Email",
               help='The email of the user to add.')
-@click.option('--pass1', prompt="Password",
+@click.option('--pass1', prompt="Password", hide_input=True,
               help='The password of the user to add.')
-@click.option('--pass2', prompt="Confirm password",
+@click.option('--pass2', prompt="Confirm password", hide_input=True,
               help='Confirmation for the password of the user to add.')
 
 def main(first_name, last_name, email, pass1, pass2):
