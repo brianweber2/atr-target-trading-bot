@@ -81,7 +81,6 @@ def main(first_name, last_name, email, pass1, pass2):
     )
   except Exception as e:
     print("\nUnable to save user. Please contact support.")
-    print(e)
     sys.exit(0)
   else:
     print("\nUser successfully created!")
