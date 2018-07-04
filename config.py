@@ -2,7 +2,7 @@
 DEBUG = True
 PORT = 8080
 HOST = '0.0.0.0'
-SECRET_KEY = 'mysecret'
+SECRET_KEY = '\xd914\xca\xd7"M\xcfB\xb4W3D\r%\xe1\xcc\xdd\xc91\xaf\x1d\x08.'
 
 # MongoDB Settings
 from pymongo import MongoClient
