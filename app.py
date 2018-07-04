@@ -80,7 +80,7 @@ def login():
         created_at=user['created_at']
       )
       login_user(user_obj)
-      flash("You've been logged in!", "success")
+      # flash("You've been logged in!", "success")
       return redirect(url_for('index'))
     flash("Your email or password don't match!", "error")
   return render_template('login.html', form=form)
@@ -91,6 +91,36 @@ def logout():
   logout_user()
   flash("You've been logged out!", "success")
   return redirect(url_for('login'))
+
+@app.route('/authentication')
+@login_required
+def authentication():
+  return render_template('dashboard_auth.html', user=current_user)
+
+@app.route('/live_trading')
+@login_required
+def live_trading():
+  return render_template('dashboard_live_trading.html', user=current_user)
+
+@app.route('/bot_settings')
+@login_required
+def bot_settings():
+  return render_template('dashboard_bot_settings.html', user=current_user)
+
+@app.route('/trade_history')
+@login_required
+def trade_history():
+  return render_template('dashboard_trade_history.html', user=current_user)
+
+@app.route('/invoices')
+@login_required
+def invoices():
+  return render_template('dashboard_invoices.html', user=current_user)
+
+@app.route('/support')
+@login_required
+def support():
+  return render_template('dashboard_support.html', user=current_user)
 
 @app.route('/tda_auth')
 @login_required

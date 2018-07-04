@@ -1,0 +1,24 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}{{ super() }} - Trade History{% endblock %}
+
+{% block content %}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2">Trade History</h1>
+  </div>
+
+  <p>Page should include:</p>
+  <ul>
+    <li>
+      A table of most recent trades first with pagination.
+    </li>
+    <li>
+      Ability to sort and filter the trade history.
+    </li>
+    <li>
+      Ability to export data in a spreadsheet format.
+    </li>
+  </ul>
+</main>
+{% endblock %}

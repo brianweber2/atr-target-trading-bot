@@ -29,10 +29,10 @@
 
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{{ url_for('index') }}">ATR Target Trading</a>
-      <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+      {# <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"> #}
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="{{ url_for('logout') }}">Sign out</a>
+          <a class="nav-link" href="{{ url_for('logout') }}">Sign out {{ user.username }}</a>
         </li>
       </ul>
     </nav>
@@ -43,50 +43,56 @@
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link active" href="{{ url_for('index') }}">
+                <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{{ url_for('index') }}">
                   <span data-feather="home"></span>
                   Dashboard <span class="sr-only">(current)</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file"></span>
-                  Orders
+                <a class="nav-link {% if request.path == '/authentication' %}active{% endif %}" href="{{ url_for('authentication') }}">
+                  <span data-feather="lock"></span>
+                  Authentication
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="shopping-cart"></span>
-                  Products
+                <a class="nav-link {% if request.path == '/live_trading' %}active{% endif %}" href="{{ url_for('live_trading') }}">
+                  <span data-feather="play"></span>
+                  Live Trading
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="users"></span>
-                  Customers
+                <a class="nav-link {% if request.path == '/bot_settings' %}active{% endif %}" href="{{ url_for('bot_settings') }}">
+                  <span data-feather="settings"></span>
+                  Bot Settings
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link {% if request.path == '/trade_history' %}active{% endif %}" href="{{ url_for('trade_history') }}">
+                  <span data-feather="activity"></span>
+                  Trade History
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if request.path == '/invoices' %}active{% endif %}" href="{{ url_for('invoices') }}">
                   <span data-feather="bar-chart-2"></span>
-                  Reports
+                  Invoices
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="layers"></span>
-                  Integrations
+                <a class="nav-link {% if request.path == '/support' %}active{% endif %}" href="{{ url_for('support') }}">
+                  <span data-feather="help-circle"></span>
+                  Support
                 </a>
               </li>
             </ul>
 
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-              <span>Saved reports</span>
+              <span>Saved Bot Settings</span>
               <a class="d-flex align-items-center text-muted" href="#">
                 <span data-feather="plus-circle"></span>
               </a>
             </h6>
-            <ul class="nav flex-column mb-2">
+            {# <ul class="nav flex-column mb-2">
               <li class="nav-item">
                 <a class="nav-link" href="#">
                   <span data-feather="file-text"></span>
@@ -111,7 +117,7 @@
                   Year-end sale
                 </a>
               </li>
-            </ul>
+            </ul> #}
           </div>
         </nav>
 
@@ -125,6 +131,9 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <!-- Icons -->
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <script>feather.replace()</script>
     {% block java_script %}{% endblock %}
   </body>
 

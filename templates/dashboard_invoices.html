@@ -1,0 +1,23 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}{{ super() }} - Invoices{% endblock %}
+
+{% block content %}
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2">Invoices</h1>
+  </div>
+
+  <p>Page should include:</p>
+  <ul>
+    <li>
+      List in a table the latest invoices for the customer, which will detail commissions, fees, and overall performance of the bot.
+    </li>
+    <li>
+      Provide option to download to PDF format.
+    </li>
+  </ul>
+
+  {# <h2>Connect Your TD Ameritrade Account</h2> #}
+</main>
+{% endblock %}
