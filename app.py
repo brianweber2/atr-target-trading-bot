@@ -8,6 +8,7 @@ from flask_login import (LoginManager, login_user, logout_user, login_required,
                          current_user)
 from flask_bcrypt import check_password_hash
 from flask_bootstrap import Bootstrap
+from celery import Celery
 
 from models import User
 from forms import LoginForm
@@ -20,21 +21,34 @@ from exchange import TDAmeritradeAPI
 td_ameritrade_api = TDAmeritradeAPI(CLIENT_ID, REDIRECT_URI)
 
 app = Flask(__name__)
+# Add Bootstrap wrapper
 Bootstrap(app)
 
+# MongoDB configuration
 app.config['MONGO_DBNAME'] = MONGO_DBNAME
 app.config['MONGO_URI'] = MONGO_URI
+mongo = PyMongo(app)
 
+# Login manager configuration
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-mongo = PyMongo(app)
+# Celery configuration
+app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+
+# Initialize Celery
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
+
+@celery.task
+def keep_td_access_token_live(username):
+  pass
 
 @login_manager.user_loader
 def load_user(username):
-  users = mongo.db.users
-  user = users.find_one({'_id': username})
+  user = USERS_COLLECTION.find_one({'_id': username})
   if not user:
     flash("User does not exist")
     return None
@@ -197,8 +211,7 @@ def tda_auth():
   td_ameritrade_api.rt_expires_in = rt_expires_in
 
   # Create a new task to refresh the access token before it expires
-  # keep_td_access_token_live(current_user.username, session,
-  #                           td_ameritrade_api)
+  # keep_td_access_token_live(current_user.username)
 
   flash("Your TD Ameritrade account has been successfully connected!",
         "success")
