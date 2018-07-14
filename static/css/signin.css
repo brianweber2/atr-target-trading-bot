@@ -47,3 +47,10 @@ body {
 body > form > div > label {
   display: none !important;
 }
+
+/*
+ * Flash Messages
+ */
+.alert {
+  text-align: center;
+}

@@ -10,8 +10,9 @@ MONGO_DBNAME = 'trading_bot'
 MONGO_URI = 'mongodb://admin:Testing123@ds221271.mlab.com:21271/trading_bot'
 DATABASE = MongoClient(MONGO_URI)[MONGO_DBNAME]
 USERS_COLLECTION = DATABASE.users
+TD_AUTH_COLLECTION = DATABASE.td_auths
 TRADES_COLLECTION = DATABASE.trades
 
 # TD Ameritrade API Info
-CLIENT_ID = "ATRTARGET@AMER.OAUTHAP"
+CLIENT_ID = "TRADINGBOT@AMER.OAUTHAP"
 REDIRECT_URI = "http://localhost:8080/tda_auth"

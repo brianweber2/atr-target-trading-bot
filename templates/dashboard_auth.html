@@ -18,6 +18,11 @@
     </li>
   </ul>
 
-  {# <h2>Connect Your TD Ameritrade Account</h2> #}
+  {% if td_access_token %}
+  <h2>Your TD Ameritrade is connected</h2>
+  {% else %}
+  <h2>Connect Your TD Ameritrade Account</h2>
+  <p>{{ auth_url|safe }}</p>
+  {% endif %}
 </main>
 {% endblock %}
