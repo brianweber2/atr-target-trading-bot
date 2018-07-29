@@ -15,10 +15,10 @@ from forms import LoginForm
 from utils import make_authorization_url
 from config import (CLIENT_ID, REDIRECT_URI, SECRET_KEY, MONGO_DBNAME,
                     MONGO_URI, DEBUG, PORT, HOST, USERS_COLLECTION,
-                    TD_AUTH_COLLECTION)
-from exchange import TDAmeritradeAPI
+                    TD_AUTH_COLLECTION, CELERY_BROKER_URL, CELERY_RESULT_BACKEND)
+from exchange import td_ameritrade_api
+import celeryconfig
 
-td_ameritrade_api = TDAmeritradeAPI(CLIENT_ID, REDIRECT_URI)
 
 app = Flask(__name__)
 # Add Bootstrap wrapper
@@ -35,16 +35,15 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 # Celery configuration
-app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+app.config['CELERY_BROKER_URL'] = CELERY_BROKER_URL
+app.config['CELERY_RESULT_BACKEND'] = CELERY_RESULT_BACKEND
 
 # Initialize Celery
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery = Celery(app.name,
+                backend=app.config['CELERY_RESULT_BACKEND'],
+                broker=app.config['CELERY_BROKER_URL'])
+celery.config_from_object(celeryconfig)
 celery.conf.update(app.config)
-
-@celery.task
-def keep_td_access_token_live(username):
-  pass
 
 @login_manager.user_loader
 def load_user(username):
@@ -64,9 +63,6 @@ def load_user(username):
 @app.before_request
 def before_request():
   g.user = current_user
-  # Check if TD Ameritrade access token is valid. If not, request a new one.
-  if 'td_access_token' in session:
-    g.td_access_token = session['td_access_token']
 
 @app.route('/')
 def index():
@@ -101,23 +97,16 @@ def login():
 @login_required
 def logout():
   logout_user()
-  # Remove access token info from local memory
-  # session['td_access_token'] = None
   flash("You've been logged out!", "success")
   return redirect(url_for('login'))
 
 @app.route('/authentication')
 @login_required
 def authentication():
-  td_access_token = None
-  # Check if access_token in session object
-  if 'td_access_token' in session:
-    td_access_token = session['td_access_token']
-  # If it doesn't exist, return None so template updates display
   text = '<a href="{}">Authenticate with TD Ameritrade</a>'
   auth_url = text.format(make_authorization_url())
   return render_template('dashboard_auth.html', user=current_user,
-                         auth_url=auth_url, td_access_token=td_access_token)
+                         auth_url=auth_url, td_access_token=td_ameritrade_api.access_token)
 
 @app.route('/live_trading')
 @login_required
@@ -200,18 +189,11 @@ def tda_auth():
       {"$set": user_td_auth_data,
        "$currentDate": {"lastModified": True}})
 
-  # Set access token and other variables on Exchange and Session objects
-  session['td_access_token'] = access_token
+  # Set access token and other variables on Exchange object
   td_ameritrade_api.access_token = access_token
-  session['td_refresh_token'] = refresh_token
   td_ameritrade_api.refresh_token = refresh_token
-  session['td_expires_in'] = at_expires_in
   td_ameritrade_api.at_expires_in = at_expires_in
-  session['rt_expires_in'] = rt_expires_in
   td_ameritrade_api.rt_expires_in = rt_expires_in
-
-  # Create a new task to refresh the access token before it expires
-  # keep_td_access_token_live(current_user.username)
 
   flash("Your TD Ameritrade account has been successfully connected!",
         "success")
