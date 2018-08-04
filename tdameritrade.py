@@ -14,12 +14,6 @@ class TDAmeritradeAPI(object):
     self.token_type = 'Bearer'
     self.api = 'https://api.tdameritrade.com/v1/'
 
-  def get_access_token(self):
-    '''
-    Retrieve new access_token after the current one has expired.
-    '''
-    pass
-
   def get_account(self, account_id):
     pass
 

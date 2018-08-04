@@ -6,7 +6,7 @@ from datetime import datetime
 import celery
 
 sys.path.append('../')
-from exchange import td_ameritrade_api
+from tdameritrade import td_ameritrade_api
 from config import TD_AUTH_COLLECTION, CLIENT_ID
 
 
@@ -57,3 +57,10 @@ def keep_td_access_tokens_alive():
   else:
     # Do nothing
     pass
+
+@celery.task
+def execute_bot():
+  """
+  The main task for running the trading bot.
+  """
+  pass

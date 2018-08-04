@@ -16,8 +16,9 @@ from utils import make_authorization_url
 from config import (CLIENT_ID, REDIRECT_URI, SECRET_KEY, MONGO_DBNAME,
                     MONGO_URI, DEBUG, PORT, HOST, USERS_COLLECTION,
                     TD_AUTH_COLLECTION, CELERY_BROKER_URL, CELERY_RESULT_BACKEND)
-from exchange import td_ameritrade_api
+from tdameritrade import td_ameritrade_api
 import celeryconfig
+from tasks.tasks import execute_bot
 
 
 app = Flask(__name__)
