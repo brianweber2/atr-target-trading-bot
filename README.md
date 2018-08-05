@@ -44,4 +44,4 @@ Run the following command where the pip_requirements.txt file is located:
 
 Type the following command in the top directory:
 
-`sudo <name_of_venv>/bin/python app.py`
+`sudo <name_of_venv>/bin/python3 app.py`
