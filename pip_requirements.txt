@@ -35,6 +35,7 @@ pymodm==0.4.0
 pymongo==3.7.0
 pyOpenSSL==18.0.0
 pytz==2018.5
+PyYAML==3.13
 requests==2.18.4
 Rx==1.6.1
 sentinels==1.0.0

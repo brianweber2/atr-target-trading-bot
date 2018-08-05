@@ -20,3 +20,8 @@ REDIRECT_URI = "http://localhost:8080/tda_auth"
 # Celery Settings
 CELERY_BROKER_URL = 'pyamqp://guest@localhost//'
 CELERY_RESULT_BACKEND = 'rpc://'
+
+# Logger settings
+LOG_DIR_PATH = '/var/log/atr_trading_bot'
+LOG_FILE_NAME = 'trading-bot.log'
+LOG_ERRORS_FILENAME = 'trading-bot-errors.log'

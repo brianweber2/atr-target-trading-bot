@@ -1,5 +1,8 @@
+#!/home/brianweber2/Desktop/ATR-Target-Trading/app/venv/bin/python
 import json
 import requests
+import logging
+import logging.config
 
 from flask import (Flask, abort, request, render_template, url_for, redirect,
                    g, flash, session)
@@ -9,13 +12,15 @@ from flask_login import (LoginManager, login_user, logout_user, login_required,
 from flask_bcrypt import check_password_hash
 from flask_bootstrap import Bootstrap
 from celery import Celery
+import yaml
 
 from models import User
 from forms import LoginForm
-from utils import make_authorization_url
+from utils import make_authorization_url, create_file_with_dirs
 from config import (CLIENT_ID, REDIRECT_URI, SECRET_KEY, MONGO_DBNAME,
                     MONGO_URI, DEBUG, PORT, HOST, USERS_COLLECTION,
-                    TD_AUTH_COLLECTION, CELERY_BROKER_URL, CELERY_RESULT_BACKEND)
+                    TD_AUTH_COLLECTION, CELERY_BROKER_URL, CELERY_RESULT_BACKEND,
+                    LOG_DIR_PATH, LOG_FILE_NAME, LOG_ERRORS_FILENAME)
 from tdameritrade import td_ameritrade_api
 import celeryconfig
 from tasks.tasks import execute_bot
@@ -90,13 +95,16 @@ def login():
       )
       login_user(user_obj)
       # flash("You've been logged in!", "success")
+      logger.info('{} has been logged in.'.format(user['_id']))
       return redirect(url_for('index'))
+    logger.warning('{} failed to log in.'.format(user['_id']))
     flash("Your email or password don't match!", "error")
   return render_template('login.html', form=form)
 
 @app.route('/logout')
 @login_required
 def logout():
+  logger.info('{} has been logged out.'.format(current_user.username))
   logout_user()
   flash("You've been logged out!", "success")
   return redirect(url_for('login'))
@@ -201,5 +209,19 @@ def tda_auth():
   return redirect(url_for('live_trading'))
 
 if __name__ == '__main__':
+  # Create logger directories and files
+  create_file_with_dirs(LOG_DIR_PATH, LOG_FILE_NAME)
+  create_file_with_dirs(LOG_DIR_PATH, LOG_ERRORS_FILENAME)
+
+  # Configure logging
+  with open('logging.yaml', 'rt') as f:
+    config = yaml.safe_load(f.read())
+  logging.config.dictConfig(config)
+
+  # Get logger
+  logger = logging.getLogger(__name__)
+
+  logger.info('Starting trading bot web app...')
+
   app.secret_key = SECRET_KEY
   app.run(debug=DEBUG, port=PORT, host=HOST, ssl_context='adhoc')
