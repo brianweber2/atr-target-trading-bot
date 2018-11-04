@@ -1,6 +1,6 @@
 # ATR Target Trading Bot Web Application
 
-This document provides a summart of the repository and how to run the ATR Target Trading Bot using Joe's studies.
+This document provides a summart of the repository and how to run the ATR Target Trading Bot using Joe's studies. Note a Linux Ubuntu machine is required.
 
 ## How to install and run a virtualenv
 
